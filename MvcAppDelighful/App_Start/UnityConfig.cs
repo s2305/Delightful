@@ -30,12 +30,12 @@ namespace AppDelightful
             //container.RegisterInstance<Bidon>(new Bidon());
             //container.RegisterType<Bidon>();
 
-            container.RegisterType<IBookmarkRepository, BookmarkRepository>();
-            container.RegisterType<IKeywordRepository, KeywordRepository>();
+            //container.RegisterType<IBookmarkRepository, BookmarkRepository>();
+            //container.RegisterType<IKeywordRepository, KeywordRepository>();
 
 
-            //container.RegisterType<IBookmarkRepository, BookmarkFakeRepository>();
-            //container.RegisterType<IKeywordRepository, KeywordFakeRepository>();
+            container.RegisterType<IBookmarkRepository, BookmarkFakeRepository>();
+            container.RegisterType<IKeywordRepository, KeywordFakeRepository>();
             container.RegisterType<Microsoft.AspNet.Identity.IUserStore<Delightful.ViewModel.Model.ApplicationUser>,
                                             UserStore<ApplicationUser>>();
 
