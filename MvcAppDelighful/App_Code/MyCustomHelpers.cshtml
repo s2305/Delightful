@@ -1,0 +1,21 @@
+﻿@helper CustomHyperLink (string url, int UrlLength) {
+    
+    string urlsanshttp;
+    
+    if(url.Contains(@"http://"))
+    {
+        if(url.Length - 7 > UrlLength)
+        {
+            urlsanshttp = url.Substring(7, UrlLength) + "...";    
+        }
+        else
+        {
+            urlsanshttp = url.Substring(7, url.Length - 7) ;
+        }
+        
+        
+        <a href="@url" target="_blank">@urlsanshttp</a>
+    }
+
+
+}

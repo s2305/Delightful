@@ -1,0 +1,104 @@
+﻿@model Delightful.ViewModel.ViewModelBookmarks
+@using Delightful.Helper
+
+
+@section scripts{
+    
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/Custom/BookmarksScript.js"></script>
+
+
+<script src="~/Scripts/jquery-ui.min-1.11.1.js"></script>
+<link href="~/Content/themes/base/all.css" rel="stylesheet" />
+
+<script src="~/Scripts/Custom/AutocompleteScript.js"></script>
+
+}
+
+
+<br />
+<br />
+@*@using (Html.BeginForm()) {*@
+
+@using (Ajax.BeginForm("SearchBookmarksByKeywords", "Bookmark",
+                                            new AjaxOptions()
+                                            {
+                                                HttpMethod = "POST",
+                                                InsertionMode = InsertionMode.Replace,
+                                                UpdateTargetId = "ListBookmarks"
+                                            }))
+{
+
+    <div class="row">
+
+        <div class="col-md-9">
+
+            @Ajax.ActionLink("5 last bookmarks...",
+                  "Obtain5LastBookmarks",
+                  new AjaxOptions
+                  {
+                      UpdateTargetId = "ListBookmarks",
+                      InsertionMode = InsertionMode.Replace,
+                      HttpMethod = "GET",
+                      LoadingElementId = "WaitAMoment"
+                  })
+
+            <img src="@Url.Content("~/Images/ajax-loader.gif")" id="WaitAMoment" />
+
+
+            @Html.TextBox("SearchInput", null,
+                               new
+                               {
+                                   style = "width: 130px",
+                                   data_autocomplete = @Url.Action("Search", "Keyword")
+                               })  &nbsp;
+
+            <input type="submit" value="Search" class="btn-info" />
+
+            @Html.Hidden("hf_keywords_selected")
+
+            <div id="keywords_selected"></div>
+        </div>
+    </div>
+
+
+    <br />
+    <br />
+    <div class="row">
+
+        <div class="col-md-9">
+
+          @Html.Partial("PVListBookmarks", Model.ListBkm)
+          
+        </div>
+
+        <div class="col-md-3">
+
+            <ul>
+
+                @{
+                    foreach (var kw in Model.ListBkm.SelectMany(x => x.Keywords).Select(y => y.Word).Distinct())
+                    {
+                        <li class="keywordclass">@kw</li>
+
+                    }
+
+                }
+
+
+            </ul>
+
+        </div>
+    </div>
+    
+}
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,206 @@
+﻿@model Delightful.Dto.BookmarkDtoInsert
+
+@{
+    ViewBag.Title = "Web Api 2";
+}
+
+<hgroup class="title">
+    <h1>@ViewBag.Title.</h1>
+
+</hgroup>
+
+@section scripts{
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery-ui-1.11.1.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/SignalR/Hubs"></script>
+    
+<link href="~/Content/toastr.css" rel="stylesheet" />
+<script src="~/Scripts/toastr.js"></script>
+<script src="~/Scripts/tempo.js"></script>
+
+    <script src="~/Scripts/knockout-3.2.0.js"></script>
+
+    <script src="~/Scripts/webapi/get.js"></script>
+
+    <script src="~/Scripts/webapi/create.js"></script>
+
+    <script src="~/Scripts/webapi/Update.js"></script>
+
+    <script src="~/Scripts/webapi/delete.js"></script>
+
+
+
+    <script>
+        var myProxy = $.connection.myHub;
+        myProxy.client.refreshJS = RafraichissementListe;
+        $.connection.hub.start().done(console.log("connexion établie"));
+
+
+        function RafraichissementListe()
+        {
+
+            toastr.options = {
+                "closeButton": false,
+                "debug": false,
+                "positionClass": "toast-bottom-right",
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "700",
+                "timeOut": "2500",
+                "extendedTimeOut": "0000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+
+            toastr.success('Réaffichage de la liste', 'Refresh');
+        
+
+            AppelSearchAll();
+        }
+
+     </script>
+}
+
+<div class="row">
+
+    <div class="col-md-12">
+        <h3> It's time to play with Web Api !</h3>
+    </div>
+</div>
+<br />
+<div class="row">
+    <input type="button" value="Create" id="btCreate" class="btn-default btn-info" />&nbsp;
+    <input type="button" value="search all" id="btsearchall" class="btn-default btn-danger" />&nbsp;
+    <input type="button" value="search by Id" id="btsearchbyid" class="btn-default btn-success" />&nbsp;
+    <input type="text" id="idbkm" style="width:50px" />
+</div>
+<br />
+<br />
+<div class="row">
+
+    <table data-bind="template: {name: 'bookmarkTemplate', foreach: bookmarks}"></table>
+
+
+    <script id="bookmarkTemplate" type="text/html">
+
+        <tr>
+            <td>
+                <span data-bind="text: Id"></span>
+            </td>
+
+            <td>
+                <span data-bind="text: Title"></span>
+            </td>
+            <td>
+                <a data-bind="attr: {href: Url}" target="_blank"><span data-bind="text: Url"></span></a>
+
+            </td>
+            <td>
+                <span data-bind="text: Description"></span>
+            </td>
+            <td>
+                <a class="btDelete" data-bind="attr: {'data-bkm': Id}">Delete</a>
+                &nbsp; <img src="/Images/update.png" class="btUpdate" data-bind="attr: {'data-bkm': Id}" />
+            </td>
+
+        </tr>
+
+        <tr data-bind="attr: {'data-bkm': Id}" style="display:none">
+            <td>
+                <div>
+                    <span data-bind="text: Id"></span>
+                </div>
+            </td>
+
+            <td>
+                <div>
+                    <input type="text" id="TitleUpdate" style="width:100px" data-bind="attr: {value: Title, 'data-bkm': Id}" />
+                </div>
+            </td>
+            <td>
+                <div>
+                    <input id="UrlUpdate" type="text" style="width:180px" data-bind="attr: {value: Url, 'data-bkm': Id}" />
+                </div>
+            </td>
+            <td>
+                <div>
+                    <input id="DescriptionUpdate" type="text" style="width:180px" data-bind="attr: {value: Description, 'data-bkm': Id}" />
+                </div>
+            </td>
+            <td>
+                <div>
+                    <a id="HyperLinkUpdateBkm" data-bind="attr: {value: Description, 'data-bkm': Id}">Update</a>
+                </div>
+            </td>
+        </tr>
+
+    </script>
+
+
+</div>
+
+<div id="dialog" title="Create a new bookmark" >
+    <form id="toto">
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true)
+            <div class="form-group">
+                @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Title)
+                    @Html.ValidationMessageFor(model => model.Title)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Url, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Url)
+                    @Html.ValidationMessageFor(model => model.Url)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Description)
+                    @Html.ValidationMessageFor(model => model.Description)
+                </div>
+            </div>
+
+            <fieldset>
+                <legend>Keywords</legend>
+
+                <div class="form-group">
+                    <label for="Keyword_0" class="control-label col-md-2">Keyword 0</label>
+                    <div class="col-md-10">
+                        <input class="text-box single-line" id="Keywords_0__Word" name="Keywords[0].Word" type="text" value="" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Keyword_1" class="control-label col-md-2">Keyword 1</label>
+                    <div class="col-md-10">
+                        <input class="text-box single-line" id="Keywords_1__Word" name="Keywords[1].Word" type="text" value="" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Keyword_2" class="control-label col-md-2">Keyword 2</label>
+                    <div class="col-md-10">
+                        <input class="text-box single-line" id="Keywords_2__Word" name="Keywords[2].Word" type="text" value="" />
+                    </div>
+                </div>
+
+            </fieldset>
+
+    </form>
+    </div>
+
+
